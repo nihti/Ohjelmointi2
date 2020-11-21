@@ -9,7 +9,12 @@
 </head>
 <body>
 <table id="listaus">
-	<thead>				
+	<thead>	
+		<tr>
+			<th style="text-align: right;">Hakusana: </th>
+			<th colspan="2"><input type="text" id="hakusana"></th>
+			<th><input type="button" value="hae" id="hakunappi"></th>
+		</tr>			
 		<tr>
 			<th>Rekisterinumero</th>
 			<th>Merkki</th>
@@ -29,21 +34,45 @@ $(document).ready(function(){
 		dataType:"json", 
 		success: function(result) { // funktio palauttaa tiedot json-objektina
 			console.log(result);
-		}});
+		}
+	});
 	
-	$.ajax({url:"autot", type:"GET", dataType:"json", success:function(result){//Funktio palauttaa tiedot json-objektina		
-		$.each(result.autot, function(i, field){  
-        	var htmlStr;
-        	htmlStr+="<tr>";
-        	htmlStr+="<td>"+field.rekno+"</td>";
-        	htmlStr+="<td>"+field.merkki+"</td>";
-        	htmlStr+="<td>"+field.malli+"</td>";
-        	htmlStr+="<td>"+field.vuosi+"</td>";  
-        	htmlStr+="</tr>";
-        	$("#listaus tbody").append(htmlStr);
-        });	
-    }});
+	// klikki 
+	haeAutot();
+	$("#hakunappi").click(function() {
+		console.log($("#hakusana").val());
+		haeAutot();
+	});
+	// enter
+	$(document.body).on("keydown", function(event) {
+		if (event.which==13) {
+			haeAutot();
+		}
+	})};
+	// kursori focus
+	$("#hakusana").focus();
 });	
+
+function haeAutot() {
+	$("#listaus tbody").empty();
+	$.ajax({
+		url:"autot/"+$("#hakusana").val(), 
+		type:"GET", 
+		dataType:"json", 
+		success:function(result){//Funktio palauttaa tiedot json-objektina		
+		$.each(result.autot, function(i, field){  
+	    	var htmlStr;
+	    	htmlStr+="<tr>";
+	    	htmlStr+="<td>"+field.rekno+"</td>";
+	    	htmlStr+="<td>"+field.merkki+"</td>";
+	    	htmlStr+="<td>"+field.malli+"</td>";
+	    	htmlStr+="<td>"+field.vuosi+"</td>";  
+	    	htmlStr+="</tr>";
+	    	$("#listaus tbody").append(htmlStr);
+	    });	
+	}});
+}
+
 
 </script>
 </body>

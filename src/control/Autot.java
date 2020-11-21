@@ -34,7 +34,7 @@ import model.dao.Dao;
  * Servlet implementation class Autot
  */
 			// End point 
-@WebServlet("/autot")
+@WebServlet("/autot/*")
 public class Autot extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -51,8 +51,14 @@ public class Autot extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Autot.doGet()");
+		
+		// haetaan kutsun path-tiedot
+		String pathInfo = request.getPathInfo();
+		System.out.println("polku: "+pathInfo);
+		String hakusana = pathInfo.replace("/", "");
+		
 		Dao dao = new Dao();
-		ArrayList<Auto> autot = dao.listaaKaikki();
+		ArrayList<Auto> autot = dao.listaaKaikki(hakusana);
 		System.out.println(autot);
 		
 		/* 
@@ -62,6 +68,7 @@ public class Autot extends HttpServlet {
 		String strJSON = new JSONObject().put("autot", autot).toString();
 		
 		response.setContentType("applicatiion/json");
+		
 		PrintWriter out = response.getWriter();
 		out.println(strJSON);
 	}
